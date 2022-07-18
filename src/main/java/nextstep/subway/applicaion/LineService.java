@@ -83,15 +83,15 @@ public class LineService {
     }
 
     private List<StationResponse> createStationResponses(Line line) {
-        if (line.getSections().isEmpty()) {
+        if (line.getSectionList().isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Station> stations = line.getSections().stream()
+        List<Station> stations = line.getSectionList().stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
-        stations.add(0, line.getSections().get(0).getUpStation());
+        stations.add(0, line.getSectionList().get(0).getUpStation());
 
         return stations.stream()
                 .map(it -> stationService.createStationResponse(it))
@@ -103,10 +103,10 @@ public class LineService {
         Line line = lineRepository.findById(lineId).orElseThrow(IllegalArgumentException::new);
         Station station = stationService.findById(stationId);
 
-        if (!line.getSections().get(line.getSections().size() - 1).getDownStation().equals(station)) {
+        if (!line.getSectionList().get(line.getSectionList().size() - 1).getDownStation().equals(station)) {
             throw new IllegalArgumentException();
         }
 
-        line.getSections().remove(line.getSections().size() - 1);
+        line.getSectionList().remove(line.getSectionList().size() - 1);
     }
 }

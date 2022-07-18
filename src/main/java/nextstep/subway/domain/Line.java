@@ -1,10 +1,19 @@
 package nextstep.subway.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import nextstep.subway.exception.BadRequestException;
+import org.springframework.util.StringUtils;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@ToString
 public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,8 +21,8 @@ public class Line {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections;
 
     public Line() {
     }
@@ -23,31 +32,28 @@ public class Line {
         this.color = color;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Line(String name, String color, int distance, Station upStation, Station downStation) {
+        nameAndColorValidation(name, color);
         this.name = name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
         this.color = color;
+        this.sections = new Sections(this, distance, upStation, downStation);
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Station> getStations(){
+        return sections.getStation();
     }
+
+    public List<Section> getSectionList(){
+        return sections.getSections();
+    }
+
+    public void nameAndColorValidation(String name, String color){
+        if(!StringUtils.hasText(name)){
+            throw new BadRequestException("name을 입력하여 주십시오.");
+        }
+        if(!StringUtils.hasText(color)){
+            throw new BadRequestException("color을 입력하여 주십시오.");
+        }
+    }
+
 }

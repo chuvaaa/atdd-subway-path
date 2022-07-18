@@ -1,8 +1,16 @@
 package nextstep.subway.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import nextstep.subway.exception.BadRequestException;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@Getter
+@ToString
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,23 +41,21 @@ public class Section {
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public Section(Integer distance, Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new BadRequestException("상행종점역과 하행종점역의 아이디는 같을 수 없습니다.");
+        }
+        this.distance = distance;
+        this.upStation = upStation;
+        this.downStation = downStation;
     }
 
-    public Line getLine() {
-        return line;
+    public void setLine(Line line) {
+        this.line = line;
     }
 
-    public Station getUpStation() {
-        return upStation;
+    public List<Station> getStations() {
+        return List.of(upStation, downStation);
     }
 
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
 }
