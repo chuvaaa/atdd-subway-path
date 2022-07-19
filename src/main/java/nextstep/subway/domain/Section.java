@@ -34,14 +34,14 @@ public class Section {
 
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Integer distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Integer distance, Station upStation, Station downStation) {
+    public Section(Station upStation, Station downStation, Integer distance) {
         if (upStation.equals(downStation)) {
             throw new BadRequestException("상행종점역과 하행종점역의 아이디는 같을 수 없습니다.");
         }

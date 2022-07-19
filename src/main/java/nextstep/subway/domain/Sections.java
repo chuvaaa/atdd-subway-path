@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
-	@OneToMany(mappedBy = "line", orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "line",
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+			orphanRemoval = true)
 	@OrderBy("id asc")
 	private final List<Section> sections = new ArrayList<>();
 
@@ -23,7 +25,7 @@ public class Sections {
 	}
 
 	public Sections(Line line, int distance, Station upStation, Station downStation) {
-		Section section = new Section(distance, upStation, downStation);
+		Section section = new Section(upStation, downStation, distance);
 		section.setLine(line);
 		sections.add(section);
 	}
@@ -34,6 +36,11 @@ public class Sections {
 				.flatMap(List::stream)
 				.distinct()
 				.collect(Collectors.toList());
+	}
+
+	public void addSection(Line line, Section section) {
+		sections.add(section);
+		section.setLine(line);
 	}
 
 	public void add(Section addSection) {

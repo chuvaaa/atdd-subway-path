@@ -22,7 +22,7 @@ public class Line {
     private String color;
 
     @Embedded
-    private Sections sections;
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -37,6 +37,16 @@ public class Line {
         this.name = name;
         this.color = color;
         this.sections = new Sections(this, distance, upStation, downStation);
+    }
+
+    public Line(Long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
+
+    public void addSection(Section section) {
+        this.sections.addSection(this,section);
     }
 
     public List<Station> getStations(){
